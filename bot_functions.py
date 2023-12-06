@@ -60,3 +60,8 @@ def parce_information_for_bot(url):
         return 'Извините, произошла ошибка'
 
 
+def get_url_to_img(url):
+    response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    images = soup.findAll('div', class_='sc-e1f8e4dd-5 kUQYWt')
