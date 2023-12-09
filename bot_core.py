@@ -6,7 +6,7 @@ import bot_functions as bf
 bot = telebot.TeleBot(st.BOT_TOKEN)
 
 
-@bot.message_handler(content_types=['text.txt'])
+@bot.message_handler(content_types=['text'])
 def get_text_messages(message):
     if message.text not in st.BOT_COMMAND_LIST:
         object_url = bf.find_url(message.text)
