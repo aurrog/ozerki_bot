@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import datetime
+import httplib2
 
 
 def load_logs(message):
@@ -61,7 +62,16 @@ def parce_information_for_bot(url):
 
 
 def get_url_to_img(url):
-    response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
-    soup = BeautifulSoup(response.text, 'html.parser')
-
+    getURL = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
+    soup = BeautifulSoup(getURL.text, 'html.parser')
     images = soup.findAll('div', class_='sc-e1f8e4dd-5 kUQYWt')
+
+    for i in str(images).split():
+        if 'src=' in i:
+            image_url = 'https://ozerki.ru'+i[5:len(i) - 1]
+            print(image_url.replace('amp;', '').replace('amp;', ''))
+            h = httplib2.Http('.cache')
+            response, content = h.request(image_url.replace('amp;', '').replace('amp;', ''))
+            out = open('images\img.jpg', 'wb')
+            out.write(content)
+            out.close()
