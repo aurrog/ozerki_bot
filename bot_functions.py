@@ -39,7 +39,7 @@ def parce_information_for_bot(url):
         try:
             response = requests.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
-            all_names = soup.findAll('h1', class_='sc-461baecd-1 jOLEXy')
+            all_names = soup.findAll('h1', class_='sc-af7b87e6-1 geivEL')
             all_prices = soup.findAll('div', class_='product-price__base-price')
             all_addresses = soup.findAll('div', class_='sc-605479e2-4 gqLEMG')
             filteredAddresses = []
