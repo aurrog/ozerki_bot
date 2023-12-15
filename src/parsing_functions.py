@@ -1,15 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-import datetime
 import httplib2
-
-
-def load_logs(message):
-    file = open('user_data.txt', 'a', encoding='utf-8')
-    data = f'{str(message.from_user.id)}, {str(message.from_user.username)}, {message.from_user.first_name}, {message.from_user.last_name}:   {message.text}      {datetime.datetime.today()}\n'
-    file.write(data)
-
-    file.close()
+import src.settings as settings
 
 
 def find_url(query):
@@ -26,26 +18,27 @@ def find_url(query):
                     if i == '/':
                         slash_num += 1
                     if slash_num == 7:
-                       href = href[0:index]
-                       break
+                        href = href[0:index]
+                        break
                     index += 1
+                print(href)
                 return href
     except:
-        return 'error'
+        return False
 
 
 def parce_information_for_bot(url):
-    if url != 'error':
+    if url:
         try:
             response = requests.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
-            all_names = soup.findAll('h1', class_='sc-af7b87e6-1 geivEL')
-            all_prices = soup.findAll('div', class_='product-price__base-price')
-            all_addresses = soup.findAll('div', class_='sc-605479e2-4 gqLEMG')
+            all_names = soup.findAll('h1', class_=settings.product_h1_name_class)
+            all_prices = soup.findAll('div', class_=settings.product_div_price_class)
+            all_addresses = soup.findAll('div', class_=settings.product_div_addresses_class)
             filteredAddresses = []
             for data in all_addresses:
                 filteredAddresses.append(data.text)
-            adresses_count = len(filteredAddresses)
+            addresses_count = len(filteredAddresses)
 
             filteredNames = []
             filteredPrices = []
@@ -56,7 +49,7 @@ def parce_information_for_bot(url):
         except:
             return 'Извините, произошла ошибка'
         else:
-            return f'{filteredNames[0]}:\n {filteredPrices[0]}\n Доступно в {adresses_count} аптеках'
+            return f'{filteredNames[0]}:\n {filteredPrices[0]}\n Доступно в {addresses_count} аптеках'
     else:
         return 'Извините, произошла ошибка'
 
@@ -64,12 +57,11 @@ def parce_information_for_bot(url):
 def get_url_to_img(url):
     getURL = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
     soup = BeautifulSoup(getURL.text, 'html.parser')
-    images = soup.findAll('div', class_='sc-e1f8e4dd-5 kUQYWt')
+    images = soup.findAll('div', class_=settings.product_div_image_class)
 
     for i in str(images).split():
         if 'src=' in i:
-            image_url = 'https://ozerki.ru'+i[5:len(i) - 1]
-            print(image_url.replace('amp;', '').replace('amp;', ''))
+            image_url = 'https://ozerki.ru' + i[5:len(i) - 1]
             h = httplib2.Http('.cache')
             response, content = h.request(image_url.replace('amp;', '').replace('amp;', ''))
             out = open('images\img.jpg', 'wb')
