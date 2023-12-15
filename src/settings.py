@@ -1,4 +1,4 @@
-BOT_TOKEN = '6622236116:AAFvMPgmeThYafBhkO4IycKFERq3KNpVppQ'
+BOT_TOKEN = ''
 
 ACCOUNTS_FILE = 'user_logs/user_account.json'
 BOT_COMMAND_LIST = ['/start', '/help', '/set_city']
